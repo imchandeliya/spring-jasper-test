@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReportService {
 
+    private static String REPORT_PATH= "src/main/resources/templates/jasper/employee_report_template.jsxml";
+
     /**
      * Method to fetch reports
      * @return
      */
     public String getTestReport() {
-        //todo:
+        //todo: use template in {@link ReportService#REPORT_PATH}
         return "";
     }
 }
