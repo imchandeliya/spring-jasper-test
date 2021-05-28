@@ -53,7 +53,7 @@ public class ReportService {
 //        map.put("salary", 25000.0);
 
         try {
-            // main report
+            // main report : blank template
             JasperReportBuilder mainReport = DynamicReports.report().setTemplateDesign(BLANK_TEMPLATE_PATH);
             mainReport.setDataSource(new JREmptyDataSource());
 
@@ -77,6 +77,9 @@ public class ReportService {
 //            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection1)));
 
 
+            /**
+             * This wil generate pdf in your download folder ;)
+             */
             JasperPrint jPrint = JasperFillManager.fillReport(mainReport.toJasperReport(),
                     mainReport.getJasperParameters(), mainReport.getDataSource());
             return jPrint;
