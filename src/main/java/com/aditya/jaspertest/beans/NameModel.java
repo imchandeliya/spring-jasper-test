@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class PersonData {
+@NoArgsConstructor
+public class NameModel {
 
-    private NameModel name;
-    private OccupationDetails occupationDetails;
-    private Integer age;
-    private String hobby;
+    private String fName;
+    private String mName;
+    private String lName;
 }

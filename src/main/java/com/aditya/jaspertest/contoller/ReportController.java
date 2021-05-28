@@ -25,7 +25,8 @@ public class ReportController {
     @GetMapping("/get")
     public File getReport(HttpServletRequest request) throws FileNotFoundException, JRException {
         JasperPrint jasperPrint = reportService.getTestReport();
-        File file = new File("JasperExportTest.pdf");
+        String home = System.getProperty("user.home");
+        File file = new File(home+"/Downloads/JasperExportTest.pdf");
         OutputStream outputStream = new FileOutputStream(file);
         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
         return file;

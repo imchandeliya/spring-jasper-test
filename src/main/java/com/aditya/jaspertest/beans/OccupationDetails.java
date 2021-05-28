@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonData {
-
-    private NameModel name;
-    private OccupationDetails occupationDetails;
-    private Integer age;
-    private String hobby;
+public class OccupationDetails {
+    private String company;
+    private String jobTitle;
+    private Double salary;
+    private String companyAddress;
 }

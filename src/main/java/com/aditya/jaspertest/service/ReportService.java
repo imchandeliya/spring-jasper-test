@@ -1,5 +1,7 @@
 package com.aditya.jaspertest.service;
 
+import com.aditya.jaspertest.beans.NameModel;
+import com.aditya.jaspertest.beans.OccupationDetails;
 import com.aditya.jaspertest.beans.PersonData;
 import com.google.common.io.Resources;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -31,6 +33,8 @@ import java.util.HashMap;
 public class ReportService {
 
     private static String REPORT_PATH= "src/main/resources/templates/jasper/employee_report_template.jrxml";
+    private static String BLANK_TEMPLATE_PATH= "src/main/resources/templates/jasper/blank_template.jrxml";
+
 
     /**
      * Method to fetch reports
@@ -39,20 +43,42 @@ public class ReportService {
     public JasperPrint getTestReport() {
         //todo: use template in {@link ReportService#REPORT_PATH}
         PersonData personData = fillRandomData();
+        PersonData personData1 = fillRandomData1();
+        PersonData personData2 = fillRandomData2();
 
-//        JasperReportBuilder
-//        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Arrays.asList(personData));
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("firstName", "Aditya");
-        map.put("lastName", "Chandeliya");
-        map.put("salary", 25000.0);
+
+//        HashMap<String, Object> map = new HashMap<String, Object>();
+//        map.put("firstName", personData.);
+//        map.put("lastName", "Chandeliya");
+//        map.put("salary", 25000.0);
 
         try {
-            JasperReportBuilder jasperReportBuilder = DynamicReports.report().setTemplateDesign(REPORT_PATH);
-            jasperReportBuilder.setDataSource(new JRBeanCollectionDataSource(Collections.singletonList(map)));
+            // main report
+            JasperReportBuilder mainReport = DynamicReports.report().setTemplateDesign(BLANK_TEMPLATE_PATH);
+            mainReport.setDataSource(new JREmptyDataSource());
 
-            JasperPrint jPrint = JasperFillManager.fillReport(jasperReportBuilder.toJasperReport(),
-                    jasperReportBuilder.getJasperParameters(), jasperReportBuilder.getDataSource());
+            //subsection 1
+            JasperReportBuilder subSection1 =  DynamicReports.report().setTemplateDesign(REPORT_PATH);
+            subSection1.setDataSource(new JRBeanCollectionDataSource(Collections.singletonList(personData)));
+            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection1)));
+
+            //subsection 2
+            JasperReportBuilder subSection2 =  DynamicReports.report().setTemplateDesign(REPORT_PATH);
+            subSection2.setDataSource(new JRBeanCollectionDataSource(Collections.singletonList(personData1)));
+            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection2)));
+
+
+            //subsection 3
+            JasperReportBuilder subSection3 =  DynamicReports.report().setTemplateDesign(REPORT_PATH);
+            subSection3.setDataSource(new JRBeanCollectionDataSource(Collections.singletonList(personData2)));
+            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection3)));
+
+
+//            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection1)));
+
+
+            JasperPrint jPrint = JasperFillManager.fillReport(mainReport.toJasperReport(),
+                    mainReport.getJasperParameters(), mainReport.getDataSource());
             return jPrint;
 
         } catch (JRException | DRException e) {
@@ -89,10 +115,32 @@ public class ReportService {
 
 
     public PersonData fillRandomData() {
-        PersonData pData = new PersonData();
-        pData.setAge(24);
-        pData.setName("Aditya Chandeliya");
-        pData.setOccupation("Software Developer");
+        NameModel nameModel = new NameModel("Aditya", "Kumar", "Chandeliya");
+        OccupationDetails occupationDetails =
+                new OccupationDetails("Tata Consultancy Services",
+                        "Full-Stack Dev", 100.0, "Sahyadri Park");
+
+        PersonData pData = new PersonData(nameModel, occupationDetails, 25, "Bike Riding");
+        return pData;
+    }
+
+    public PersonData fillRandomData1() {
+        NameModel nameModel = new NameModel("John", "Lol", "Wick");
+        OccupationDetails occupationDetails =
+                new OccupationDetails("Secret Services",
+                        "Agent", 1000000.0, "Unknown");
+
+        PersonData pData = new PersonData(nameModel, occupationDetails, 50, "Kutta paalna");
+        return pData;
+    }
+
+    public PersonData fillRandomData2() {
+        NameModel nameModel = new NameModel("Tony", "Lol", "Stark");
+        OccupationDetails occupationDetails =
+                new OccupationDetails("Stark Enterprises",
+                        "CEO & Owner", 1000000000.0, "Stark Tower");
+
+        PersonData pData = new PersonData(nameModel, occupationDetails, 45, "Experiments");
         return pData;
     }
 
