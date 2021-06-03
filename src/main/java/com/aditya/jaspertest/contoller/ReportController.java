@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 @RestController
 @RequestMapping("/report")
@@ -23,12 +20,13 @@ public class ReportController {
     ReportService reportService;
 
     @GetMapping("/get")
-    public File getReport(HttpServletRequest request) throws FileNotFoundException, JRException {
-        JasperPrint jasperPrint = reportService.getTestReport();
+    public File getReport(HttpServletRequest request) throws IOException, JRException {
+        JasperPrint jasperPrint = reportService.getTestReport2();
         String home = System.getProperty("user.home");
         File file = new File(home+"/Downloads/JasperExportTest.pdf");
         OutputStream outputStream = new FileOutputStream(file);
         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+        outputStream.close();
         return file;
 //        return jasperPrint;
     }

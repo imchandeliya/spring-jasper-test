@@ -32,8 +32,11 @@ import java.util.HashMap;
 @Service
 public class ReportService {
 
-    private static String REPORT_PATH= "src/main/resources/templates/jasper/employee_report_template.jrxml";
+    private static String REPORT_PATH= "templates/jasper/employee_report_template.jrxml";
     private static String BLANK_TEMPLATE_PATH= "src/main/resources/templates/jasper/blank_template.jrxml";
+    private static String TEMP1 = "src/main/resources/templates/jasper/qa_general.jrxml";
+    private static String TEMP2 = "src/main/resources/templates/jasper/temp2.jrxml";
+
 
 
     /**
@@ -163,5 +166,47 @@ public class ReportService {
             e.printStackTrace();
             return "Issue in compilation";
         }
+    }
+
+    public JasperPrint getTestReport2() {
+        //todo: use template in {@link ReportService#REPORT_PATH}
+        PersonData personData = fillRandomData();
+        PersonData personData1 = fillRandomData1();
+        PersonData personData2 = fillRandomData2();
+
+        try {
+            // main report : blank template
+            JasperReportBuilder mainReport = DynamicReports.report().setTemplateDesign(Resources.getResource(BLANK_TEMPLATE_PATH));
+            mainReport.setDataSource(new JREmptyDataSource());
+
+            //subsection 1
+            JasperReportBuilder subSection1 =  DynamicReports.report().setTemplateDesign(Resources.getResource(TEMP1));
+            subSection1.setDataSource(new JREmptyDataSource());
+            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection1)));
+
+            //subsection 2
+            JasperReportBuilder subSection2 =  DynamicReports.report().setTemplateDesign(Resources.getResource(TEMP2));
+            subSection2.setDataSource(new JREmptyDataSource());
+            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection2)));
+
+
+            //subsection 3
+            JasperReportBuilder subSection3 =  DynamicReports.report().setTemplateDesign(REPORT_PATH);
+            subSection3.setDataSource(new JRBeanCollectionDataSource(Collections.singletonList(personData2)));
+            mainReport.addDetail(DynamicReports.cmp.horizontalList(DynamicReports.cmp.subreport(subSection3)));
+
+
+            /**
+             * This wil generate pdf in your download folder ;)
+             */
+            JasperPrint jPrint = JasperFillManager.fillReport(mainReport.toJasperReport(),
+                    mainReport.getJasperParameters(), mainReport.getDataSource());
+            return jPrint;
+
+        } catch (JRException | DRException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
